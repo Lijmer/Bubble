@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
-#include "obj_Bubble.h"
+//#include "obj_Bubble.h"
+#include <allegro5/allegro_primitives.h>
 class obj_Bubble : public GameObject
 {
 public:

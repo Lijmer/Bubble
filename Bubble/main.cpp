@@ -1,19 +1,23 @@
 #pragma region includes
+//General
 #include "globals.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_native_dialog.h>
 #include <vector>
+#include <iostream>
 
+//Managers
 #include "DisplayManager.h"
 #include "ImageManager.h"
 
+//Game Objects
 #include "GameObject.h"
-
 #include "obj_Player.h"
 #include "obj_Bubble.h"
 
-#include <iostream>
+//Backgrounds
+#include "Background.h"
 
 #pragma endregion
 
@@ -26,6 +30,7 @@ std::vector<GameObject *>::iterator pendingObjectsIter;
 
 obj_Player *obj_player = NULL;
 obj_Bubble *obj_bubble = NULL;
+
 #pragma endregion This contains variables that are used by all kinds of functions in this file
 
 #pragma region Prototypes
@@ -69,6 +74,7 @@ int main(int argc, char **argv)
 	//Initialize the image manager, this will load all the images into the memory and will give error messages if anything goes wrong
 	ImageManager::GetInstance().Init();
 	
+	#pragma region Create ALL the objects
 	//Create Object This method of creating objects is temporary and this code will be changed soon!!
 	obj_player = new obj_Player(&CreateBubble);
 	obj_player->Init(_SCREEN_WIDTH/2, _SCREEN_HEIGHT/2, 0, 0, 104); 
@@ -77,6 +83,10 @@ int main(int argc, char **argv)
 	obj_bubble = new obj_Bubble();
 	obj_bubble->Init(0,0,0,0,10);
 	objects.push_back(obj_bubble);
+
+	
+	Background background;
+	#pragma endregion
 
 	//create event_queue and the timer
 	event_queue = al_create_event_queue();
@@ -219,7 +229,6 @@ int main(int argc, char **argv)
 		{
 			redraw = true;
 
-
 			for(objectsIter = objects.begin(); objectsIter!= objects.end(); objectsIter++)
 			{
 				(*objectsIter)->Update();
@@ -249,7 +258,7 @@ int main(int argc, char **argv)
 			//Delete all objects where alive==false
 			for(objectsIter = objects.begin(); objectsIter!=objects.end();)
 			{
-				if(!(*objectsIter)->getAlive())
+				if(!(*objectsIter)->GetAlive())
 				{
 					delete (*objectsIter);
 					objectsIter = objects.erase(objectsIter);
@@ -280,14 +289,15 @@ int main(int argc, char **argv)
 			
 			//Drawing stuff on the buffer
 			al_set_target_bitmap(buffer);
-			al_draw_filled_rectangle(100-_camX, 100-_camY, _SCREEN_WIDTH-100-_camX, _SCREEN_HEIGHT-100-_camY, al_map_rgb(255,0,255));
+			background.Draw();
+			//al_draw_filled_rectangle(100-_camX, 100-_camY, _SCREEN_WIDTH-100-_camX, _SCREEN_HEIGHT-100-_camY, al_map_rgb(255,0,255));
 			
-			al_draw_filled_rectangle(0-_camX, 0-_camY, 32-_camX, 32-_camY, al_map_rgb(255,0,255));
-			al_draw_filled_rectangle(_LEVEL_WIDTH - 32 - _camX, 0 -_camY, _LEVEL_WIDTH -_camX, 32 -_camY, al_map_rgb(255,0,255));
-			al_draw_filled_rectangle(_LEVEL_WIDTH - 32- _camX, _LEVEL_HEIGHT - 32-_camY, _LEVEL_WIDTH - _camX, _LEVEL_HEIGHT-_camY, al_map_rgb(255,0,255));
-			al_draw_filled_rectangle(0 - _camX, _LEVEL_HEIGHT-32-_camY, 32 - _camX, _LEVEL_HEIGHT-_camY, al_map_rgb(255,0,255));
-			al_draw_line(_LEVEL_WIDTH/2.0 -_camX, -_camY, _LEVEL_WIDTH/2.0 -_camX, _LEVEL_HEIGHT-_camY, al_map_rgb(0,0,255), 2);
-			al_draw_line(-_camX, _LEVEL_HEIGHT/2.0 -_camY, _LEVEL_WIDTH - _camX, _LEVEL_HEIGHT/2.0 -_camY, al_map_rgb(0,0,255), 2);
+			//al_draw_filled_rectangle(0-_camX, 0-_camY, 32-_camX, 32-_camY, al_map_rgb(255,0,255));
+			//al_draw_filled_rectangle(_LEVEL_WIDTH - 32 - _camX, 0 -_camY, _LEVEL_WIDTH -_camX, 32 -_camY, al_map_rgb(255,0,255));
+			//al_draw_filled_rectangle(_LEVEL_WIDTH - 32- _camX, _LEVEL_HEIGHT - 32-_camY, _LEVEL_WIDTH - _camX, _LEVEL_HEIGHT-_camY, al_map_rgb(255,0,255));
+			//al_draw_filled_rectangle(0 - _camX, _LEVEL_HEIGHT-32-_camY, 32 - _camX, _LEVEL_HEIGHT-_camY, al_map_rgb(255,0,255));
+			//al_draw_line(_LEVEL_WIDTH/2.0 -_camX, -_camY, _LEVEL_WIDTH/2.0 -_camX, _LEVEL_HEIGHT-_camY, al_map_rgb(0,0,255), 2);
+			//al_draw_line(-_camX, _LEVEL_HEIGHT/2.0 -_camY, _LEVEL_WIDTH - _camX, _LEVEL_HEIGHT/2.0 -_camY, al_map_rgb(0,0,255), 2);
 
 			for(objectsIter=objects.begin(); objectsIter!=objects.end(); objectsIter++)
 			{

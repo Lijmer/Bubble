@@ -19,7 +19,11 @@ public:
 	void Clean();
 
 	ALLEGRO_BITMAP* GetImage(unsigned char ID = 255);
+	ALLEGRO_BITMAP* GetBackground(unsigned char ID = 255);
 
 private:
 	ALLEGRO_BITMAP *img_player;
+
+
+	ALLEGRO_BITMAP *bkg_space;
 };

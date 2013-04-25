@@ -21,10 +21,16 @@ void ImageManager::Init()
 	al_init_image_addon();
 	img_player = al_load_bitmap("img/player/bubble.png");
 
+
+	//al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP | ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
+	bkg_space = al_load_bitmap("img/Background/space.jpg");
+
 	std::string error = "";
 
 	if(img_player == NULL)
 		error = "img_player";
+	else if(bkg_space == NULL)
+		error = "bkg_space";
 
 	if(error != "")
 	{
@@ -60,6 +66,24 @@ ALLEGRO_BITMAP* ImageManager::GetImage(unsigned char ID)
 	{
 		al_show_native_message_box(DisplayManager::GetInstance().GetDisplay(), "Error!", "ImageManager",
 			"An unknown image ID was passed in to GetImage(unsigned char ID)", "ok sok", ALLEGRO_MESSAGEBOX_ERROR);
+		return NULL;
+	}
+}
+
+ALLEGRO_BITMAP* ImageManager::GetBackground(unsigned char ID)
+{
+	if(ID==255)
+	{
+		al_show_native_message_box(DisplayManager::GetInstance().GetDisplay(), "Error!", "ÏmageManager", 
+			"No value or 255 has been passed in to GetBackgroud(unsigned char ID)", "ok sok", ALLEGRO_MESSAGEBOX_ERROR);
+		return NULL;
+	}
+	else if(ID==0)
+		return bkg_space;
+	else
+	{
+		al_show_native_message_box(DisplayManager::GetInstance().GetDisplay(), "Error!", "ImageManager",
+			"An unknown background ID was passed in to GetBackground(unsigned char ID)", "ok sok", ALLEGRO_MESSAGEBOX_ERROR);
 		return NULL;
 	}
 }

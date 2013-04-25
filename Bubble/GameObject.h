@@ -26,9 +26,10 @@ public:
 	float GetVelY()							{return velY;}
 	float GetVolume()						{return volume;}
 	float GetRadius()						{return radius;}
+	float GetCircumference()				{return circumference;}
 	int GetID()								{return ID;}
 	unsigned int GetInstanceID()			{return instanceID;}
-	bool getAlive()							{return alive;}
+	bool GetAlive()							{return alive;}
 
 	void SetX(float x)						{GameObject::x = x;}
 	void SetY(float y)						{GameObject::y = y;}
@@ -49,8 +50,17 @@ protected:
 	float volume;
 	float volumePrevious;
 	float radius;
+	float circumference;
 
 	ALLEGRO_BITMAP *image;
+
+	float CalcRadius(float volume);
+	float CalcCircumference(float radius);
+	float CalcEnergyKinetic(float velocity, float mass);
+	float CalcVelocity(float energyKinetic, float mass);
+
+	float CalcCenterAngleTriangleInCirlce(float x1, float y1, float x2, float y2, float x3, float y3);
+
 private:
 	bool alive;
 	int ID;

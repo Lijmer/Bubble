@@ -7,7 +7,6 @@ obj_Bubble::obj_Bubble(void)
 obj_Bubble::~obj_Bubble(void)
 {
 }
-
 void obj_Bubble::Init(float x, float y, float velX, float velY, float volume)
 {
 	obj_Bubble::x = x;
@@ -16,7 +15,8 @@ void obj_Bubble::Init(float x, float y, float velX, float velY, float volume)
 	obj_Bubble::velY = velY;
 	obj_Bubble::volume = volume;
 	volumePrevious = volume;
-	radius = pow((float)volume,(float)(1.0/2.0))/PI;
+	radius = CalcRadius(volume);
+	circumference = CalcCircumference(radius);
 }
 void obj_Bubble::Update()
 {
@@ -49,17 +49,18 @@ void obj_Bubble::Update()
 
 	if(volume != volumePrevious)
 	{
-		radius = pow((float)volume,(float)(1.0/2.0))/PI;
-		float energyVelX = .5*volumePrevious*(velX*velX);
-		float energyVelY = .5*volumePrevious*(velY*velY);
+		radius = CalcRadius(volume);
+		circumference = CalcCircumference(radius);
+		float energyVelX = CalcEnergyKinetic(velX, volumePrevious);
+		float energyVelY = CalcEnergyKinetic(velY, volumePrevious);
 		if(velX >= 0)
-			velX = sqrt(energyVelX/(.5*volume));
+			velX = CalcVelocity(energyVelX,volume);
 		else
-			velX = -sqrt(energyVelX/(.5*volume));
+			velX = -CalcVelocity(energyVelX,volume);
 		if(velY >= 0)
-			velY = sqrt(energyVelY/(.5*volume));
+			velY = CalcVelocity(energyVelY,volume);
 		else
-			velY = -sqrt(energyVelY/(.5*volume));
+			velY = -CalcVelocity(energyVelY,volume);
 	}
 
 	volumePrevious = volume;
@@ -67,15 +68,16 @@ void obj_Bubble::Update()
 void obj_Bubble::Draw()
 {
 	al_draw_scaled_rotated_bitmap(image, 104, 104, x-_camX, y-_camY, (1.0f/104.0f)*radius, (1.0f/104.0f)*radius, 0 , 0);
+	//al_draw_filled_circle(x-_camX,y-_camY,radius,al_map_rgb(255,0,0));
 }
 void obj_Bubble::Collided(GameObject *other)
 {
-	if(other->GetVolume() < volume)
+	if(volume >= other->GetVolume())
 	{
-		volume+=100;
+		volume+=other->GetCircumference();
 	}
-	else if(other->GetVolume() > volume)
+	else if(volume < other->GetVolume())
 	{
-		volume-=100;
+		volume-=circumference;
 	}
 }
