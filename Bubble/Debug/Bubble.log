@@ -1,0 +1,28 @@
+﻿Build started 23-4-2013 23:27:35.
+     1>Project "D:\Dhr. Max Oomen\Documents\Visual Studio 2010\Projects\Bubble\Bubble\Bubble.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\Bubble.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Ic:\allegro\mvsc\include /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt obj_Player.cpp
+         obj_Player.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Dhr. Max Oomen\Documents\Visual Studio 2010\Projects\Bubble\Debug\Bubble.exe" /NOLOGO /LIBPATH:C:\allegro\mvsc\lib "allegro-5.0.8-monolith-md.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Bubble.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Dhr. Max Oomen\Documents\Visual Studio 2010\Projects\Bubble\Debug\Bubble.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Dhr. Max Oomen\Documents\Visual Studio 2010\Projects\Bubble\Debug\Bubble.lib" /MACHINE:X86 Debug\DisplayManager.obj
+         Debug\GameObject.obj
+         Debug\globals.obj
+         Debug\ImageManager.obj
+         Debug\main.obj
+         Debug\obj_Bubble.obj
+         Debug\obj_Player.obj
+         Debug\obj_Test.obj
+         LINK : D:\Dhr. Max Oomen\Documents\Visual Studio 2010\Projects\Bubble\Debug\Bubble.exe not found or not built by the last incremental link; performing full link
+         Bubble.vcxproj -> D:\Dhr. Max Oomen\Documents\Visual Studio 2010\Projects\Bubble\Debug\Bubble.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"D:\Dhr. Max Oomen\Documents\Visual Studio 2010\Projects\Bubble\Debug\Bubble.exe;#1" /manifest Debug\Bubble.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Debug\Bubble.unsuccessfulbuild".
+         Touching "Debug\Bubble.lastbuildstate".
+     1>Done Building Project "D:\Dhr. Max Oomen\Documents\Visual Studio 2010\Projects\Bubble\Bubble\Bubble.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.34
