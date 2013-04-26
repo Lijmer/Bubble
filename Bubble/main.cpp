@@ -69,6 +69,7 @@ int main(int argc, char **argv)
 	//Initialize the image manager, this will load all the images into the memory and will give error messages if anything goes wrong
 	ImageManager::GetInstance().Init();
 	
+	#pragma region Create objects
 	//Create Object This method of creating objects is temporary and this code will be changed soon!!
 	obj_player = new obj_Player(&CreateBubble);
 	obj_player->Init(_SCREEN_WIDTH/2, _SCREEN_HEIGHT/2, 0, 0, 104); 
@@ -77,6 +78,7 @@ int main(int argc, char **argv)
 	obj_bubble = new obj_Bubble();
 	obj_bubble->Init(0,0,0,0,10);
 	objects.push_back(obj_bubble);
+	#pragma endregion
 
 	//create event_queue and the timer
 	event_queue = al_create_event_queue();
@@ -208,10 +210,13 @@ int main(int argc, char **argv)
 		}
 		#pragma endregion Get input from the mouse
 
+		#pragma region Other input
 		else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 		{
 			done=true;
 		}
+		#pragma endregion
+
 		#pragma endregion Get input from the user (via mouse, keyboard and display);
 
 		#pragma region Update
@@ -280,7 +285,7 @@ int main(int argc, char **argv)
 			
 			//Drawing stuff on the buffer
 			al_set_target_bitmap(buffer);
-			al_draw_filled_rectangle(100-_camX, 100-_camY, _SCREEN_WIDTH-100-_camX, _SCREEN_HEIGHT-100-_camY, al_map_rgb(255,0,255));
+			//al_draw_filled_rectangle(100-_camX, 100-_camY, _SCREEN_WIDTH-100-_camX, _SCREEN_HEIGHT-100-_camY, al_map_rgb(255,0,255));
 			
 			al_draw_filled_rectangle(0-_camX, 0-_camY, 32-_camX, 32-_camY, al_map_rgb(255,0,255));
 			al_draw_filled_rectangle(_LEVEL_WIDTH - 32 - _camX, 0 -_camY, _LEVEL_WIDTH -_camX, 32 -_camY, al_map_rgb(255,0,255));
@@ -338,8 +343,6 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-#pragma region functions
-
 void MoveCam()
 {
 	if(_velZoom >= 0.001)
@@ -374,6 +377,3 @@ obj_Bubble* __cdecl CreateBubble(float x, float y, float velX, float velY, float
 	pendingObjects.push_back(obj_bubble);
 	return obj_bubble;
 }
-
-#pragma endregion All functions are in here (except for main())
-
