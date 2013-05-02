@@ -1,4 +1,5 @@
 #pragma region includes
+
 //General
 #include "globals.h"
 #include <allegro5/allegro.h>
@@ -10,6 +11,7 @@
 //Managers
 #include "DisplayManager.h"
 #include "ImageManager.h"
+#include "FileManager.h"
 
 //Game Objects
 #include "GameObject.h"
@@ -35,7 +37,7 @@ obj_Bubble *obj_bubble = NULL;
 
 #pragma region Prototypes
 void MoveCam();
-obj_Bubble* __cdecl CreateBubble(float x, float y, float velX, float velY, float volume);
+obj_Bubble* CreateBubble(float x, float y, float velX, float velY, float volume);
 #pragma endregion Contains declerations of functions later in this file
 
 #pragma region main variables
@@ -84,6 +86,7 @@ int main(int argc, char **argv)
 	obj_bubble->Init(0,0,0,0,10);
 	objects.push_back(obj_bubble);
 
+	FileManager::GetInstance().LoadLevel();
 	
 	Background background;
 	#pragma endregion

@@ -47,10 +47,14 @@ protected:
 	int z;
 	float velX;
 	float velY;
+	float velXPrevious;
+	float velYPrevious;
 	float volume;
 	float volumePrevious;
 	float radius;
 	float circumference;
+	float frictionX;
+	float frictionY;
 
 	ALLEGRO_BITMAP *image;
 

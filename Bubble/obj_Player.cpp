@@ -14,7 +14,7 @@ obj_Player::~obj_Player(void)
 
 void obj_Player::Init(float x, float y, float velX, float velY, float volume)
 {
-	volume = 10000;
+	volume = 1000;
 	obj_Player::x = x;
 	obj_Player::y = y;
 	obj_Player::velX = velX;
@@ -40,10 +40,10 @@ void obj_Player::Update()
 	if(_mouseButtonPressed[M_LEFT] && volume > 0)
 	{
 		//Caclulate information about the other bubble that will be created
-		float otherVolume = volume/100;
+		float otherVolume = volume/150;
 		float otherRadius = CalcRadius(otherVolume);
-		float otherVelX = cos(mouseDir)*3;
-		float otherVelY = sin(mouseDir)*3;
+		float otherVelX = cos(mouseDir)*10;
+		float otherVelY = sin(mouseDir)*10;
 		float otherEnergyVelX = CalcEnergyKinetic(otherVelX, otherVolume);
 		float otherEnergyVelY = CalcEnergyKinetic(otherVelY, otherVolume);
 		//Change velocity based on the kinetic energy created by shooting the other bubble away
@@ -62,6 +62,49 @@ void obj_Player::Update()
 	}
 	if(_mouseButtonPressed[M_RIGHT])
 		volume += 10000;
+
+	if(volume != volumePrevious)
+	{
+		radius = CalcRadius(volume);
+		circumference = CalcCircumference(radius);
+		float energyVelX = CalcEnergyKinetic(velX, volumePrevious);
+		float energyVelY = CalcEnergyKinetic(velY, volumePrevious);
+		if(velX >= 0)
+			velX = CalcVelocity(energyVelX,volume);
+		else
+			velX = -CalcVelocity(energyVelX,volume);
+		if(velY >= 0)
+			velY = CalcVelocity(energyVelY,volume);
+		else
+			velY = -CalcVelocity(energyVelY,volume);
+	}
+
+	if(velX != velXPrevious || velY !=velYPrevious)
+	{
+		float hypotenuse = sqrt( (velX*velX) + (velY*velY));
+		float angle = 0;
+		if(velY>0)
+			angle = PI - acos(velY / hypotenuse) + PI;
+		else
+			angle = acos(velY / hypotenuse);
+
+		//frictionX = -cos(angle)*.01;
+		//frictionY = -sin(angle)*.01;
+		
+		//std::cout << frictionX << "\t" << frictionY << std::endl;
+	}
+	
+	
+	velXPrevious = velX;
+	velYPrevious = velY;
+	
+	velX -= frictionX;
+	velY -= frictionY;
+
+	if(velX < 0.01 && velX > -0.01)
+		velX=0;
+	if(velY < 0.01 && velY > -0.01)
+		velY = 0;
 
 	x+=velX;
 	y+=velY;
@@ -99,21 +142,10 @@ void obj_Player::Update()
 	else if(_camY > _LEVEL_HEIGHT - _SCREEN_HEIGHT)
 		_camY = _LEVEL_HEIGHT - _SCREEN_HEIGHT;
 
-	if(volume != volumePrevious)
-	{
-		radius = CalcRadius(volume);
-		circumference = CalcCircumference(radius);
-		float energyVelX = CalcEnergyKinetic(velX, volumePrevious);
-		float energyVelY = CalcEnergyKinetic(velY, volumePrevious);
-		if(velX >= 0)
-			velX = CalcVelocity(energyVelX,volume);
-		else
-			velX = -CalcVelocity(energyVelX,volume);
-		if(velY >= 0)
-			velY = CalcVelocity(energyVelY,volume);
-		else
-			velY = -CalcVelocity(energyVelY,volume);
-	}
+	_camX = 0;
+	_camY = 0;
+
+	
 
 	volumePrevious = volume;
 }

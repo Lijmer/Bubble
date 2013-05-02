@@ -12,9 +12,14 @@ GameObject::GameObject(void)
 	z=0;
 	velX=0;
 	velY=0;
+	velXPrevious = 0;
+	velYPrevious = 0;
 	volume = 0;
 	volumePrevious = 0;
 	radius = 0;
+	circumference = 0;
+	frictionX = 0;
+	frictionY = 0;
 
 	ID=UNDEFINED;
 	instanceID = ++lastID;
@@ -73,7 +78,6 @@ float GameObject::CalcVelocity(float energyKinetic, float mass)
 {
 	return sqrt((2*energyKinetic)/mass);
 }
-
 float GameObject::CalcCenterAngleTriangleInCirlce(float x1, float y1, float x2, float y2, float x3, float y3)
 {
 	//A^2 + B^2 = C^2
