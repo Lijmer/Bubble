@@ -69,24 +69,30 @@
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="DisplayManager.cpp" />
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="obj_AI_Bubble.cpp" />
     <ClCompile Include="obj_Bubble.cpp" />
     <ClCompile Include="obj_Player.cpp" />
     <ClCompile Include="obj_Test.cpp" />
+    <ClCompile Include="ScreenManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Background.h" />
     <ClInclude Include="DisplayManager.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="ImageManager.h" />
+    <ClInclude Include="obj_AI_Bubble.h" />
     <ClInclude Include="obj_Bubble.h" />
     <ClInclude Include="obj_Player.h" />
     <ClInclude Include="obj_Test.h" />
+    <ClInclude Include="ScreenManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

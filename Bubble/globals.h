@@ -8,11 +8,13 @@ const float PI = 3.14159265f;
 
 enum KEYS
 {
-	UP,
+	UP=0,
 	DOWN,
 	LEFT,
 	RIGHT,
-	ALT
+	Q_KEY,
+	ALT,
+	ENUM_KEYS_SIZE
 };
 enum MOUSE
 {
@@ -29,11 +31,13 @@ enum DISPLAY_STATE
 enum OBJECT_ID
 {
 	UNDEFINED = -1,
-	PLAYER
+	PLAYER,
+	BUBBLE,
+	AI_BUBBLE
 };
 
 extern float _camX, _camY;
-extern bool _keys[5];
+extern bool _keys[ENUM_KEYS_SIZE];
 extern bool _mouseButton[2];
 extern bool _mouseButtonPressed[2];
 extern float _mouseX, _mouseY;

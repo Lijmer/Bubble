@@ -38,7 +38,7 @@ public:
 	void SetVelY(float velY)				{GameObject::velY = velY;}
 	void SetVolume(float volume)			{GameObject::volume = volume;}
 	void SetID(int ID)						{GameObject::ID = ID;}
-	void setAlive(bool alive)				{GameObject::alive = alive;}
+	void SetAlive(bool alive)				{GameObject::alive = alive;}
 
 
 protected:
@@ -57,6 +57,8 @@ protected:
 	float frictionY;
 
 	ALLEGRO_BITMAP *image;
+
+	//void OutsideLevel(float &_x, float &_y, float &_velX, float &_velY);
 
 	float CalcRadius(float volume);
 	float CalcCircumference(float radius);

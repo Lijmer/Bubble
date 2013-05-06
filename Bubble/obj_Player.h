@@ -7,7 +7,7 @@
 class obj_Player : public GameObject
 {
 public:
-	obj_Player(obj_Bubble* (*CreateBubble)(float x, float y, float velX, float velY, float volume));
+	obj_Player();
 	~obj_Player(void);
 
 	void Init(float x, float y, float direction, float speed, float volume);
@@ -16,7 +16,6 @@ public:
 	void Collided(GameObject *other);
 
 private:
-	obj_Bubble* (*CreateBubble)(float x, float y, float velX, float velY, float volume);
 
 	//in radiants
 	float mouseDir;

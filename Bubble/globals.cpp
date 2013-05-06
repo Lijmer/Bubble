@@ -1,5 +1,6 @@
+#include "globals.h"
 float _camX=0, _camY=0;
-bool _keys[5] = {false, false, false, false, false};
+bool _keys[ENUM_KEYS_SIZE] = {false, false, false, false, false, false};
 bool _mouseButton[2] = {false, false};
 bool _mouseButtonPressed[2] = {false, false};
 float _mouseX, _mouseY;

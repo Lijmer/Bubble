@@ -12,28 +12,12 @@
 #include "DisplayManager.h"
 #include "ImageManager.h"
 #include "FileManager.h"
-
-//Game Objects
-#include "GameObject.h"
-#include "obj_Player.h"
-#include "obj_Bubble.h"
+#include "GameObjectManager.h"
 
 //Backgrounds
 #include "Background.h"
 
 #pragma endregion
-
-#pragma region variables
-std::vector<GameObject *> objects;
-std::vector<GameObject *> pendingObjects;
-std::vector<GameObject *>::iterator objectsIter;
-std::vector<GameObject *>::iterator objectsIter2;
-std::vector<GameObject *>::iterator pendingObjectsIter;
-
-obj_Player *obj_player = NULL;
-obj_Bubble *obj_bubble = NULL;
-
-#pragma endregion This contains variables that are used by all kinds of functions in this file
 
 #pragma region Prototypes
 void MoveCam();
@@ -77,14 +61,6 @@ int main(int argc, char **argv)
 	ImageManager::GetInstance().Init();
 	
 	#pragma region Create ALL the objects
-	//Create Object This method of creating objects is temporary and this code will be changed soon!!
-	obj_player = new obj_Player(&CreateBubble);
-	obj_player->Init(_SCREEN_WIDTH/2, _SCREEN_HEIGHT/2, 0, 0, 104); 
-	objects.push_back(obj_player);
-
-	obj_bubble = new obj_Bubble();
-	obj_bubble->Init(0,0,0,0,10);
-	objects.push_back(obj_bubble);
 
 	FileManager::GetInstance().LoadLevel();
 	
@@ -110,7 +86,7 @@ int main(int argc, char **argv)
 	//Start the timer
 	al_start_timer(timer);
 	gameTime = al_current_time();
-	
+	GameObjectManager::GetInstance().Create();
 	#pragma endregion All kinds of stuff get initialized here.
 
 	#pragma region Game loop
@@ -139,6 +115,9 @@ int main(int argc, char **argv)
 				break;
 			case ALLEGRO_KEY_RIGHT:
 				_keys[RIGHT] = true;
+				break;
+			case ALLEGRO_KEY_Q:
+				_keys[Q_KEY]=true;
 				break;
 			case ALLEGRO_KEY_ALT:
 				_keys[ALT] = true;
@@ -169,6 +148,9 @@ int main(int argc, char **argv)
 				break;
 			case ALLEGRO_KEY_RIGHT:
 				_keys[RIGHT] = false;
+				break;
+			case ALLEGRO_KEY_Q:
+				_keys[Q_KEY]=false;
 				break;
 			case ALLEGRO_KEY_ALT:
 				_keys[ALT] = false;
@@ -225,60 +207,18 @@ int main(int argc, char **argv)
 		{
 			done=true;
 		}
-		#pragma endregion Get input from the user (via mouse, keyboard and display);
-
+		#pragma endregion Get input from the user (via mouse, keyboard and display)
 		#pragma region Update
 		else if(ev.type == ALLEGRO_EVENT_TIMER)
 		{
 			redraw = true;
-
-			for(objectsIter = objects.begin(); objectsIter!= objects.end(); objectsIter++)
-			{
-				(*objectsIter)->Update();
-			}
-
-			//This pushes all objects that were created in the update event to the objects vector
-			for(pendingObjectsIter = pendingObjects.begin(); pendingObjectsIter!=pendingObjects.end(); )
-			{
-				objects.push_back(*pendingObjectsIter);
-				pendingObjectsIter = pendingObjects.erase(pendingObjectsIter);
-			}
-
-			for(objectsIter = objects.begin(); objectsIter!=objects.end(); objectsIter++)
-			{
-				for(objectsIter2=objectsIter; objectsIter2!=objects.end(); objectsIter2++)
-				{
-					if(((*objectsIter)->GetInstanceID() == (*objectsIter2)->GetInstanceID()))
-						continue;
-					if((*objectsIter)->CheckCollision(*objectsIter2))
-					{
-						(*objectsIter)->Collided(*objectsIter2);
-						(*objectsIter2)->Collided(*objectsIter);
-					}
-				}
-			}
-
-			//Delete all objects where alive==false
-			for(objectsIter = objects.begin(); objectsIter!=objects.end();)
-			{
-				if(!(*objectsIter)->GetAlive())
-				{
-					delete (*objectsIter);
-					objectsIter = objects.erase(objectsIter);
-				}
-				else
-					objectsIter++;
-			}
-
+			GameObjectManager::GetInstance().TimerEvent();
 			MoveCam();
-
 			//Reset variables
 			_mouseButtonPressed[M_LEFT] = false;
 			_mouseButtonPressed[M_RIGHT] = false;
-
 		}
 		#pragma endregion Timer event (for update and collision functions)
-
 		#pragma region Draw
 		if(redraw && al_is_event_queue_empty(event_queue))
 		{
@@ -302,10 +242,7 @@ int main(int argc, char **argv)
 			//al_draw_line(_LEVEL_WIDTH/2.0 -_camX, -_camY, _LEVEL_WIDTH/2.0 -_camX, _LEVEL_HEIGHT-_camY, al_map_rgb(0,0,255), 2);
 			//al_draw_line(-_camX, _LEVEL_HEIGHT/2.0 -_camY, _LEVEL_WIDTH - _camX, _LEVEL_HEIGHT/2.0 -_camY, al_map_rgb(0,0,255), 2);
 
-			for(objectsIter=objects.begin(); objectsIter!=objects.end(); objectsIter++)
-			{
-				(*objectsIter)->Draw();
-			}
+			GameObjectManager::GetInstance().Draw();
 			
 			//Drawing the buffer on the screen
 			al_set_target_backbuffer(DisplayManager::GetInstance().GetDisplay());
@@ -335,11 +272,7 @@ int main(int argc, char **argv)
 
 	#pragma region Cleaning
 
-	for(objectsIter = objects.begin(); objectsIter!=objects.end(); )
-	{
-		delete (*objectsIter);
-		objectsIter = objects.erase(objectsIter);
-	}
+	
 
 	DisplayManager::GetInstance().Clean();
 	ImageManager::GetInstance().Clean();
@@ -378,14 +311,6 @@ void MoveCam()
 		_zoom=1;
 		_velZoom=0;
 	}
-}
-
-obj_Bubble* __cdecl CreateBubble(float x, float y, float velX, float velY, float volume)
-{
-	obj_bubble = new obj_Bubble();
-	obj_bubble->Init(x,y,velX,velY,volume);
-	pendingObjects.push_back(obj_bubble);
-	return obj_bubble;
 }
 
 #pragma endregion All functions are in here (except for main())
