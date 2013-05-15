@@ -3,7 +3,6 @@
 #include "obj_Bubble.h"
 #include <allegro5/allegro_primitives.h>
 
-#include <iostream>
 class obj_Player : public GameObject
 {
 public:

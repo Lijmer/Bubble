@@ -1,15 +1,19 @@
 #include "obj_AI_Bubble.h"
 #include "GameObjectManager.h"
+#include "AudioManager.h"
 #include <allegro5/allegro_primitives.h>
 #include "obj_Bubble.h"
 class obj_Bubble;
 obj_AI_Bubble::obj_AI_Bubble(void)
 {
 	image = ImageManager::GetInstance().GetImage(0);
+	imageRed = ImageManager::GetInstance().GetImage(1);
+	imageGreen = ImageManager::GetInstance().GetImage(2);
 	SetID(AI_BUBBLE);
 	shootCount = rand()%50+10;
 	hasFoundDirection=false;
 	removeBubbleFromShotBubblesCount=300;
+	r=0,g=0,b=0;
 }
 obj_AI_Bubble::~obj_AI_Bubble(void)
 {
@@ -49,7 +53,7 @@ void obj_AI_Bubble::Update()
 		if(volume-(volume/75) > closestBubble->GetVolume())
 		{
 			hasFoundDirection = true;
-			std::cout << "Towards\n";
+			//std::cout << "Towards\n";
 			ox = closestBubble->GetX();
 			oy = closestBubble->GetY();
 			S = sqrt( ((ox)-(x))*((ox)-(x)) + ((oy) - (y))*((oy)-(y)) );
@@ -62,7 +66,7 @@ void obj_AI_Bubble::Update()
 		else if(volume <= closestBubble->GetVolume() && closestBubble->GetVolume() > volume/70)
 		{
 			hasFoundDirection = true;
-			std::cout << "Away\n";
+			//std::cout << "Away\n";
 			ox = closestBubble->GetX();
 			oy = closestBubble->GetY();
 			S = sqrt( (ox-x)*(ox-x) + (oy-y)*(oy-y) );
@@ -75,10 +79,11 @@ void obj_AI_Bubble::Update()
 	}
 
 	//Shoot a bubble once in 0.5 - 2 seconds
-	if(hasFoundDirection)
+	if(hasFoundDirection && GameObjectManager::GetInstance().IsPlaying())
 	{
 		if(--shootCount <= 0)
 		{
+			AudioManager::GetInstance().PlaySoundEffect(rand()%3+1);
 			shootCount = rand()%100+60;
 
 			float otherVolume = volume/75;
@@ -99,7 +104,7 @@ void obj_AI_Bubble::Update()
 			//Create the bubble (using some of the info calculated earlier in this if statement)
 			obj_Bubble *shotBubble = GameObjectManager::GetInstance().CreateBubble(x + (radius+otherRadius)*cos(destinationDirection),
 				y + (radius+otherRadius)*sin(destinationDirection),	otherVelX + velX, otherVelY + velY, otherVolume);
-			shotBubbles.push_back(shotBubble);
+			shotBubbles.push_back(shotBubble->GetInstanceID());
 			//Change volume of the player's bubble
 			volume -= otherVolume;
 		}
@@ -108,7 +113,8 @@ void obj_AI_Bubble::Update()
 	if(--removeBubbleFromShotBubblesCount<=0)
 	{
 		removeBubbleFromShotBubblesCount=300;
-		shotBubbles.erase(shotBubbles.begin());
+		if(shotBubbles.size()>0)
+			shotBubbles.erase(shotBubbles.begin());
 	}
 
 
@@ -153,14 +159,37 @@ void obj_AI_Bubble::Update()
 			*/
 	}
 
+	if(GameObjectManager::GetInstance().TimesBiggerThanPlayer(volume)>1)
+	{
+		r+=3;
+		g-=3;
+		if(r>50)
+			r=50;
+		if(g<0)
+			g=0;
+	}
+	else
+	{
+		g+=3;
+		r-=3;
+		if(g>50)
+			g=50;
+		if(r<0)
+			r=0;
+	}
+
 	volumePrevious = volume;
 	hasFoundDirection = false;
 }
 
 void obj_AI_Bubble::Draw()
 {
-	al_draw_scaled_rotated_bitmap(image, 104, 104, x-_camX, y-_camY, (1.0f/104.0f) * radius, (1.0f/104.0f) * radius,0, 0);
-	al_draw_filled_circle(x,y,radius,al_map_rgb(255,0,0));
+
+	//al_draw_scaled_rotated_bitmap(image, 104, 104, (x-_camX)*(1/_zoom), (y-_camY)*(1/_zoom), (1.0f/96.0f) * radius, (1.0f/96.0f) * radius,0, 0);
+	//al_draw_scaled_bitmap(image, 0, 0, 208, 208, x-(104*(1/96.f)*radius*(1/_zoom)), y-(104*(1/96.f)*radius*(1/_zoom)),208*(1/96.f)*radius*(1/_zoom),208*(1/96.f)*radius*(1/_zoom),0);
+	al_draw_tinted_scaled_rotated_bitmap(imageRed,al_map_rgba(r,r,r,r),104,104,x,y,(1/96.f)*radius,(1/96.f)*radius,0,0);
+	al_draw_tinted_scaled_rotated_bitmap(imageGreen,al_map_rgba(g,g,g,g),104,104,x,y,(1/96.f)*radius,(1/96.f)*radius,0,0);
+	al_draw_scaled_rotated_bitmap(image,104,104,x,y,(1.0/96.f)*radius,(1.0/96.f)*radius,0,0);
 }
 
 void obj_AI_Bubble::Collided(GameObject *other)

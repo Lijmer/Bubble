@@ -17,5 +17,9 @@ private:
 	int removeBubbleFromShotBubblesCount;
 	bool hasFoundDirection;
 
-	std::vector<GameObject *> shotBubbles;
+	//It stores the instance IDs
+	std::vector<unsigned int> shotBubbles;
+
+	float r,g,b;
+	ALLEGRO_BITMAP *imageRed, *imageGreen;
 };

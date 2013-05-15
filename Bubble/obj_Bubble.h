@@ -14,6 +14,7 @@ public:
 	void Collided(GameObject *other);
 
 private:
-
+	int r,g,b;
+	ALLEGRO_BITMAP *imageRed, *imageGreen;
 };
 

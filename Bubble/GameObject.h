@@ -5,7 +5,6 @@
 
 #include <math.h>
 
-#include <iostream>
 class GameObject
 {
 public:

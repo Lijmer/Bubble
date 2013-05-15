@@ -1,5 +1,9 @@
 #include "DisplayManager.h"
 
+#include <allegro5/allegro_native_dialog.h>
+
+#include "globals.h"
+
 
 DisplayManager::DisplayManager(void)
 {
@@ -10,6 +14,7 @@ DisplayManager::DisplayManager(void)
 
 DisplayManager::~DisplayManager(void)
 {
+	al_destroy_display(display);
 }
 
 
@@ -56,11 +61,6 @@ bool DisplayManager::CreateDisplay()
 	return true;
 }
 
-void DisplayManager::Clean()
-{
-	al_destroy_display(display);
-}
-
 void DisplayManager::ChangeState()
 {
 	//If fullscreen, change to windowed
@@ -99,5 +99,37 @@ void DisplayManager::ChangeState()
 
 		if(!display)
 			al_show_native_message_box(display, "Error!", "DisplayManager", "Failed to create display", "OkSok", ALLEGRO_MESSAGEBOX_ERROR);
+	}
+}
+
+void DisplayManager::Transform()
+{
+	if(state == WINDOWED)
+	{/*
+		al_identity_transform(&trans);
+		al_translate_transform(&trans, -_SCREEN_WIDTH/2.0f, -_SCREEN_HEIGHT/2.0f);
+		al_scale_transform(&trans, 1/_zoom, 1/_zoom);
+		al_translate_transform(&trans, -(_camX-_SCREEN_WIDTH/2.0f), -(_camY-_SCREEN_HEIGHT/2.0f));
+		al_use_transform(&trans);
+		*/
+		al_identity_transform(&trans);
+		//al_translate_transform(&trans, -(_camX - (_SCREEN_WIDTH/2.0f)), -(_camY - (_SCREEN_HEIGHT/2.0f)));
+		al_translate_transform(&trans, -_camX, -_camY);
+		al_scale_transform(&trans, 1/_zoom, 1/_zoom);
+		al_translate_transform(&trans, _SCREEN_WIDTH/2.0f, _SCREEN_HEIGHT/2.0f);
+		al_use_transform(&trans);
+	}
+	else if(state == FULLSCREEN_WINDOW)
+	{
+		al_identity_transform(&trans);
+		/*al_translate_transform(&trans, -_SCREEN_WIDTH/2.0f, -_SCREEN_HEIGHT/2.0f);
+		al_scale_transform(&trans, 1/_zoom, 1/_zoom);
+		al_translate_transform(&trans, -(_camX-_SCREEN_WIDTH/2.0f), -(_camY-_SCREEN_HEIGHT/2.0f));*/
+		al_translate_transform(&trans, -_camX, -_camY);
+		al_scale_transform(&trans, 1/_zoom, 1/_zoom);
+		al_translate_transform(&trans, _SCREEN_WIDTH/2.0f, _SCREEN_HEIGHT/2.0f);
+		al_scale_transform(&trans, _scaleScreen, _scaleScreen);
+		al_translate_transform(&trans, (_monitorWidth - ((float)_SCREEN_WIDTH*_scaleScreen))/2.0, (_monitorHeight - ((float)_SCREEN_HEIGHT*_scaleScreen))/2.0);
+		al_use_transform(&trans);
 	}
 }

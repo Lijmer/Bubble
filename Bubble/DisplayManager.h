@@ -1,9 +1,5 @@
 #pragma once
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_native_dialog.h>
-
-#include "globals.h"
-
 class DisplayManager
 {
 public:
@@ -17,9 +13,10 @@ public:
 	ALLEGRO_DISPLAY* GetDisplay()	{return display;}
 	char GetState()					{return state;}
 
-	void Clean();
 
 	void ChangeState();
+
+	void Transform();
 
 private:
 	char state;

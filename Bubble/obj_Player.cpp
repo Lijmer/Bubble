@@ -1,6 +1,6 @@
 #include "obj_Player.h"
-
 #include "GameObjectManager.h"
+#include "AudioManager.h"
 
 obj_Player::obj_Player()
 {
@@ -8,6 +8,7 @@ obj_Player::obj_Player()
 	S=0; O=0; A=0;
 	velX = 0;
 	velY = 0;
+	SetID(PLAYER);
 }
 obj_Player::~obj_Player(void)
 {
@@ -27,19 +28,21 @@ void obj_Player::Init(float x, float y, float velX, float velY, float volume)
 }
 void obj_Player::Update()
 {
-	S = sqrt( ((_mouseX+_camX)-(x))*((_mouseX+_camX)-(x)) + ((_mouseY+_camY) - (y))*((_mouseY+_camY)-(y)) );
-	O = _mouseY+_camY - y ;
-	A = _mouseX+_camX - x;
+	S = sqrt( ((_mouseX)-(x))*((_mouseX)-(x)) + ((_mouseY) - (y))*((_mouseY)-(y)) );
+	O = _mouseY - y ;
+	A = _mouseX - x;
 
 	//This part calculates the direction of the mouse, it needs some correction,  because inverted sin, cos and tan can have multiple awnsers and it will always return the
 	//smallest, but not always the correct one.
-	if(_mouseY < y-_camY)
+	if(_mouseY < y)
 		mouseDir = PI - acos(A/S) + PI;
 	else 
 		mouseDir = acos(A/S);
 
 	if(_mouseButtonPressed[M_LEFT] && volume > 0)
 	{
+		GameObjectManager::GetInstance().SetPlaying(true);
+		AudioManager::GetInstance().PlaySoundEffect(rand()%3+1);
 		//Caclulate information about the other bubble that will be created
 		float otherVolume = volume/75;
 		float otherRadius = CalcRadius(otherVolume);
@@ -78,17 +81,6 @@ void obj_Player::Update()
 			SetAlive(false);
 		radius = CalcRadius(volume);
 		circumference = CalcCircumference(radius);
-		/*float energyVelX = CalcEnergyKinetic(velX, volumePrevious);
-		float energyVelY = CalcEnergyKinetic(velY, volumePrevious);
-		if(velX >= 0)
-			velX = CalcVelocity(energyVelX,volume);
-		else
-			velX = -CalcVelocity(energyVelX,volume);
-		if(velY >= 0)
-			velY = CalcVelocity(energyVelY,volume);
-		else
-			velY = -CalcVelocity(energyVelY,volume);
-		*/
 	}
 
 	if(velX != velXPrevious || velY !=velYPrevious)
@@ -115,7 +107,7 @@ void obj_Player::Update()
 
 	x+=velX;
 	y+=velY;
-
+	
 	if(x<radius)
 	{
 		velX = -(velX);
@@ -136,33 +128,31 @@ void obj_Player::Update()
 		velY = -(velY);
 		y = _LEVEL_HEIGHT - radius;
 	}
-
-	//Set camera
-	_camX = x - (_SCREEN_WIDTH/2.0);
-	_camY = y - (_SCREEN_HEIGHT/2.0);
-	if(_camX < 0)
-		_camX = 0;
-	else if(_camX > _LEVEL_WIDTH - _SCREEN_WIDTH)
-		_camX = _LEVEL_WIDTH - _SCREEN_WIDTH;
-	if(_camY < 0)
-		_camY = 0;
-	else if(_camY > _LEVEL_HEIGHT - _SCREEN_HEIGHT)
-		_camY = _LEVEL_HEIGHT - _SCREEN_HEIGHT;
-
-	_camX = 0;
-	_camY = 0;
-
 	
-
+	//Set camera
+	if(!GameObjectManager::GetInstance().GetWon())
+	{
+		_camX = x;
+		_camY = y;
+	}
+	
 	volumePrevious = volume;
 }
 void obj_Player::Draw()
 {
-	al_draw_scaled_rotated_bitmap(image, 104, 104, x-_camX, y-_camY, (1.0f/104.0f) * radius, (1.0f/104.0f) * radius,0, 0);
+	//al_draw_filled_circle(x,y,radius,al_map_rgba(255,0,255,100));
+	al_draw_scaled_rotated_bitmap(image, 104, 104, (x), (y), (1.0f/96.0f) * radius, (1.0f/96.0f) * radius, 0, 0);
+
+	//al_draw_scaled_bitmap(image, 0, 0, 208, 208, x-(104*(1/96.f)*radius*(1/_zoom))-_camX, y-(104*(1/96.f)*radius*(1/_zoom))-_camY,208*(1/96.f)*radius*(1/_zoom),208*(1/96.f)*radius*(1/_zoom),0);
+
+
 	//al_draw_filled_circle(x-_camX,y-_camY,radius,al_map_rgb(0,255,0));
 
-	al_draw_line(x + (radius+5)*(A/S) -_camX, y + (radius+5)*(O/S) -_camY, x + (radius+15)*(A/S) -_camX,
-		y + (radius+15)*(O/S) -_camY,al_map_rgb(255,255,255),1);
+	al_draw_line(x + (radius+5)*(A/S) , y + (radius+5)*(O/S), x + (radius+15)*(A/S) ,
+		y + (radius+15)*(O/S) ,al_map_rgb(255,255,255),1);
+	/*al_draw_line((x+(radius+5)*(A/S))*(1/_zoom) -_camX, (y+(radius+5)*(O/S))*(1/_zoom) -_camY, 
+		(x+(radius+15)*(A/S))*(1/_zoom) -_camX, (y+(radius+15)*(O/S))*(1/_zoom) -_camY, al_map_rgb(255,255,255),1);
+	*/
 }
 void obj_Player::Collided(GameObject *other)
 {

@@ -11,5 +11,6 @@ private:
 	ALLEGRO_BITMAP* image;
 	float x;
 	static const int imageWidth = 1920;
+	static const int imageHeight = 1024; 
 };
 
